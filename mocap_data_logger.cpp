@@ -251,7 +251,7 @@ int main(int argc, char *argv[]) {
   std::ofstream myfile;
   myfile.open ("log/flight_"+Date+".csv");
   //myfile << "Frame, Framerate, Latency, x, y, z, roll, pitch, yaw,\n";
-
+  std::cout<<"Started logging to flight_"<<Date<<"\n";
   bool First = true;
   std::string HostName;
   for (const auto &rHost : Hosts) {
@@ -364,7 +364,7 @@ int main(int argc, char *argv[]) {
 #endif
     {
       // Get a frame
-      OutputStream << "Waiting for new frame...";
+      //OutputStream << "Waiting for new frame...";
       while (MyClient.GetFrame().Result != Result::Success) {
 // Sleep a little so that we don't lumber the CPU with a busy poll
 #ifdef WIN32
@@ -373,9 +373,9 @@ int main(int argc, char *argv[]) {
         sleep(1);
 #endif
 
-        OutputStream << ".";
+        //OutputStream << ".";
       }
-      OutputStream << std::endl;
+      //OutputStream << std::endl;
 
       // We have to call this after the call to get frame, otherwise we don't
       // have any subject info to map the name to ids
@@ -393,8 +393,8 @@ int main(int argc, char *argv[]) {
 
       // Get the frame number
       Output_GetFrameNumber _Output_GetFrameNumber = MyClient.GetFrameNumber();
-      OutputStream << "Frame Number: " << _Output_GetFrameNumber.FrameNumber
-                   << std::endl;
+      //OutputStream << "Frame Number: " << _Output_GetFrameNumber.FrameNumber
+      //             << std::endl;
       
       myfile << _Output_GetFrameNumber.FrameNumber <<","; ////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -404,7 +404,7 @@ int main(int argc, char *argv[]) {
       // ///////////////////////////////////////////////////////////
 
       Output_GetFrameRate Rate = MyClient.GetFrameRate();
-      OutputStream << "Frame rate: " << Rate.FrameRateHz << std::endl;
+      //OutputStream << "Frame rate: " << Rate.FrameRateHz << std::endl;
 
       // Show frame rates
       for (unsigned int FramerateIndex = 0;
@@ -414,11 +414,11 @@ int main(int argc, char *argv[]) {
             MyClient.GetFrameRateName(FramerateIndex).Name;
         double FramerateValue = MyClient.GetFrameRateValue(FramerateName).Value;
 
-        OutputStream << FramerateName << ": " << FramerateValue << "Hz"
-                     << std::endl;
+        // OutputStream << FramerateName << ": " << FramerateValue << "Hz"
+        //              << std::endl;
         myfile << FramerateValue <<","; ////////////////////////////////////////////////////////////////////////////////////
       }
-      OutputStream << std::endl;
+      //OutputStream << std::endl;
 
       // Get the timecode
       Output_GetTimecode _Output_GetTimecode = MyClient.GetTimecode();
@@ -435,8 +435,8 @@ int main(int argc, char *argv[]) {
       //              << std::endl;
 
       // Get the latency
-      OutputStream << "Latency: " << (float)MyClient.GetLatencyTotal().Total
-                   << "s" << std::endl;
+      //OutputStream << "Latency: " << (float)MyClient.GetLatencyTotal().Total
+      //             << "s" << std::endl;
       myfile << (float)MyClient.GetLatencyTotal().Total <<","; ////////////////////////////////////////////////////////////////////////////////////
       float latency = MyClient.GetLatencyTotal().Total;
 
@@ -456,7 +456,7 @@ int main(int argc, char *argv[]) {
       //   OutputStream << "  " << SampleName << " " << SampleValue << "s"
       //                << std::endl;
       // }
-      OutputStream << std::endl;
+      //OutputStream << std::endl;
 
       // Output_GetHardwareFrameNumber _Output_GetHardwareFrameNumber =
       //     MyClient.GetHardwareFrameNumber();
@@ -466,15 +466,15 @@ int main(int argc, char *argv[]) {
 
       // Count the number of subjects
       unsigned int SubjectCount = MyClient.GetSubjectCount().SubjectCount;
-      OutputStream << "Subjects (" << SubjectCount << "):" << std::endl;
+      //OutputStream << "Subjects (" << SubjectCount << "):" << std::endl;
       for (unsigned int SubjectIndex = 0; SubjectIndex < SubjectCount;
            ++SubjectIndex) {
-        OutputStream << "  Subject #" << SubjectIndex << std::endl;
+        //OutputStream << "  Subject #" << SubjectIndex << std::endl;
 
         // Get the subject name
         std::string SubjectName =
             MyClient.GetSubjectName(SubjectIndex).SubjectName;
-        OutputStream << "    Name: " << SubjectName << std::endl;
+        //OutputStream << "    Name: " << SubjectName << std::endl;
 
         ///////////////////////////////////////////////////////////
         // Set object name
@@ -621,15 +621,16 @@ int main(int argc, char *argv[]) {
               _Output_GetSegmentGlobalTranslation =
                   MyClient.GetSegmentGlobalTranslation(SubjectName,
                                                        SegmentName);
-          OutputStream << "        Global Translation: ("
-                       << _Output_GetSegmentGlobalTranslation.Translation[0]
-                       << ", "
-                       << _Output_GetSegmentGlobalTranslation.Translation[1]
-                       << ", "
-                       << _Output_GetSegmentGlobalTranslation.Translation[2]
-                       << ") "
-                       << Adapt(_Output_GetSegmentGlobalTranslation.Occluded)
-                       << std::endl;
+
+          // //OutputStream << "        Global Translation: ("
+          //              << _Output_GetSegmentGlobalTranslation.Translation[0]
+          //              << ", "
+          //              << _Output_GetSegmentGlobalTranslation.Translation[1]
+          //              << ", "
+          //              << _Output_GetSegmentGlobalTranslation.Translation[2]
+          //              << ") "
+          //              << Adapt(_Output_GetSegmentGlobalTranslation.Occluded)
+          //              << std::endl;
 
           myfile << _Output_GetSegmentGlobalTranslation.Translation[0] <<","; ////////////////////////////////////////////////////////////////////////////////////
           myfile << _Output_GetSegmentGlobalTranslation.Translation[1] <<","; ////////////////////////////////////////////////////////////////////////////////////
@@ -684,14 +685,14 @@ int main(int argc, char *argv[]) {
               _Output_GetSegmentGlobalRotationQuaternion =
                   MyClient.GetSegmentGlobalRotationQuaternion(SubjectName,
                                                               SegmentName);
-          OutputStream
-              << "        Global Rotation Quaternion: ("
-              << _Output_GetSegmentGlobalRotationQuaternion.Rotation[0] << ", "
-              << _Output_GetSegmentGlobalRotationQuaternion.Rotation[1] << ", "
-              << _Output_GetSegmentGlobalRotationQuaternion.Rotation[2] << ", "
-              << _Output_GetSegmentGlobalRotationQuaternion.Rotation[3] << ") "
-              << Adapt(_Output_GetSegmentGlobalRotationQuaternion.Occluded)
-              << std::endl;
+          // OutputStream
+          //     << "        Global Rotation Quaternion: ("
+          //     << _Output_GetSegmentGlobalRotationQuaternion.Rotation[0] << ", "
+          //     << _Output_GetSegmentGlobalRotationQuaternion.Rotation[1] << ", "
+          //     << _Output_GetSegmentGlobalRotationQuaternion.Rotation[2] << ", "
+          //     << _Output_GetSegmentGlobalRotationQuaternion.Rotation[3] << ") "
+          //     << Adapt(_Output_GetSegmentGlobalRotationQuaternion.Occluded)
+          //     << std::endl;
 
           ///////////////////////////////////////////////////////////
           // Set global rotation quaternion
@@ -724,10 +725,10 @@ int main(int argc, char *argv[]) {
 
           pitch_custom_degrees = -euler_orientation(1) * (180 / M_PI);
 
-          std::cout << '\t' << "Euler Orientation degrees: "
-                    << "roll " << roll_custom_degrees << '\t' << "pitch "
-                    << pitch_custom_degrees << '\t' << "yaw "
-                    << yaw_custom_degrees << '\n';
+          // std::cout << '\t' << "Euler Orientation degrees: "
+          //           << "roll " << roll_custom_degrees << '\t' << "pitch "
+          //           << pitch_custom_degrees << '\t' << "yaw "
+          //           << yaw_custom_degrees << '\n';
 
           myfile << roll_custom_degrees <<","; ////////////////////////////////////////////////////////////////////////////////////
           myfile << pitch_custom_degrees <<","; ////////////////////////////////////////////////////////////////////////////////////
@@ -740,17 +741,17 @@ int main(int argc, char *argv[]) {
               _Output_GetSegmentGlobalRotationEulerXYZ =
                   MyClient.GetSegmentGlobalRotationEulerXYZ(SubjectName,
                                                             SegmentName);
-          OutputStream << "        Global Rotation EulerXYZ: ("
-                       << _Output_GetSegmentGlobalRotationEulerXYZ.Rotation[0]
-                       << ", "
-                       << _Output_GetSegmentGlobalRotationEulerXYZ.Rotation[1]
-                       << ", "
-                       << _Output_GetSegmentGlobalRotationEulerXYZ.Rotation[2]
-                       << ") "
-                       << Adapt(
-                              _Output_GetSegmentGlobalRotationEulerXYZ.Occluded)
-                       << std::endl
-                       << std::endl;
+          // OutputStream << "        Global Rotation EulerXYZ: ("
+          //              << _Output_GetSegmentGlobalRotationEulerXYZ.Rotation[0]
+          //              << ", "
+          //              << _Output_GetSegmentGlobalRotationEulerXYZ.Rotation[1]
+          //              << ", "
+          //              << _Output_GetSegmentGlobalRotationEulerXYZ.Rotation[2]
+          //              << ") "
+          //              << Adapt(
+          //                     _Output_GetSegmentGlobalRotationEulerXYZ.Occluded)
+          //              << std::endl
+          //              << std::endl;
 
           // // Get the local segment translation
           // Output_GetSegmentLocalTranslation
@@ -848,7 +849,7 @@ int main(int argc, char *argv[]) {
             MyClient.GetObjectQuality(SubjectName);
         if (_Output_GetObjectQuality.Result == Result::Success) {
           double Quality = _Output_GetObjectQuality.Quality;
-          OutputStream << "    Quality: " << Quality << std::endl;
+          //OutputStream << "    Quality: " << Quality << std::endl;
         }
 
         myfile<<"\n";
