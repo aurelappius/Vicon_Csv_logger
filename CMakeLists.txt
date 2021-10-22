@@ -25,6 +25,11 @@ find_package(MAVSDK REQUIRED)
 ###############################################################################
 
 add_subdirectory(external)
-add_subdirectory(mocap_px4_apps)
+#add_subdirectory(mocap_px4_apps)
 
+add_executable(mocap_data_logger mocap_data_logger.cpp)
+
+target_link_libraries(mocap_data_logger
+ViconDataStreamSDK_lib
+)
 
